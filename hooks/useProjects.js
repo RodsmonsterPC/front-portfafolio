@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
+import API_BASE from '../config'
 
-const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/projects`
+const API_URL = `${API_BASE}/projects`
 
 /* ─── Normaliza el _id de MongoDB a id ─── */
 function normalize(project) {

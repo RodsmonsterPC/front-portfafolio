@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import API_BASE from '../config'
 
 const AuthContext = createContext(null)
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
 const TOKEN_KEY = 'portfolio_auth_token'
 
 export function AuthProvider({ children }) {
@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
       setChecking(false)
       return
     }
-    fetch(`${API}/auth/verify`, {
+    fetch(`${API_BASE}/auth/verify`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => r.json())
@@ -33,7 +33,7 @@ export function AuthProvider({ children }) {
 
   /* ── Login ── */
   const login = useCallback(async (username, password) => {
-    const res = await fetch(`${API}/auth/login`, {
+    const res = await fetch(`${API_BASE}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
