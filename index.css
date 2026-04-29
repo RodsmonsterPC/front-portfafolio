@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --accent: #00f0ff;
+    --accent-soft: rgba(0, 240, 255, 0.1);
+    --bg-base: #0a0a0c;
+    --bg-card: #141417;
+    --border: rgba(255, 255, 255, 0.08);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 100px;
+  }
+
+  /* Offset anchor scroll for sticky navbar */
+  #sobre-mi,
+  #habilidades,
+  #proyectos,
+  #contacto {
+    scroll-margin-top: 100px;
+  }
+
+  body {
+    background-color: var(--bg-base);
+    color: #e2e2e6;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg-base);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 240, 255, 0.3);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 240, 255, 0.6);
+  }
+
+  ::selection {
+    background: rgba(0, 240, 255, 0.2);
+    color: #00f0ff;
+  }
+}
+
+@layer components {
+  .skill-bar {
+    @apply h-1 bg-white/10 w-full rounded-full overflow-hidden;
+  }
+  .skill-bar-fill {
+    @apply h-full rounded-full;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+    transition: width 1.5s ease-in-out;
+  }
+
+  .nav-link {
+    @apply text-textDim text-xs font-semibold uppercase tracking-widest transition-colors duration-300 hover:text-accent;
+  }
+
+  .glass-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    @apply rounded-xl;
+  }
+
+  .accent-border-left {
+    @apply relative;
+  }
+  .accent-border-left::before {
+    content: '';
+    @apply absolute left-0 top-0 w-1 h-full rounded-l-xl;
+    background: var(--accent);
+  }
+
+  .btn-primary {
+    @apply font-black uppercase tracking-wider text-bgBase bg-accent px-8 py-4 rounded-lg transition-all duration-300 hover:brightness-110 hover:shadow-accent active:scale-95;
+  }
+
+  .btn-ghost {
+    @apply font-semibold uppercase tracking-wider text-textMain border border-white/10 px-8 py-4 rounded-lg transition-all duration-300 hover:border-accent hover:text-accent active:scale-95;
+  }
+
+  .tag-badge {
+    @apply font-mono text-xs px-3 py-1 rounded-full border border-accent text-accent uppercase tracking-wider;
+    background: var(--accent-soft);
+  }
+
+  .form-input {
+    @apply w-full bg-bgBase border border-white/10 rounded-lg px-4 py-3 text-textMain font-sans outline-none transition-all duration-300 focus:border-accent placeholder:text-textDim/50;
+  }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-lg text-textDim font-medium transition-all duration-200 hover:text-accent hover:bg-accent/10 cursor-pointer;
+  }
+  .sidebar-link.active {
+    @apply text-accent bg-accent/10;
+  }
+}
+
+@layer utilities {
+  .text-glow {
+    text-shadow: 0 0 20px rgba(0, 240, 255, 0.8);
+  }
+  .border-accent-glow {
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+    border-color: rgba(0, 240, 255, 0.5) !important;
+  }
+}
+
+/* Material Symbols explicit definition */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: 'liga';
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
