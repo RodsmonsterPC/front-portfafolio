@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Toaster } from 'react-hot-toast'
@@ -53,8 +53,29 @@ function ErrorState({ message, onRetry }) {
 }
 
 /* ────────────── PROJECT LIST ────────────── */
+function usePageSize() {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', handler)
+    return () => window.removeEventListener('resize', handler)
+  }, [])
+  return isMobile ? 5 : 10
+}
+
 function ProjectList({ projects, loading, error, onEdit, onDelete, onRetry }) {
-  const navigate = useNavigate()
+  const navigate  = useNavigate()
+  const pageSize  = usePageSize()
+  const [page, setPage] = useState(0)
+
+  // Reset a página 0 si cambia el tamaño de página
+  useEffect(() => { setPage(0) }, [pageSize])
+
+  const totalPages = Math.max(1, Math.ceil(projects.length / pageSize))
+  const paginated  = projects.slice(page * pageSize, page * pageSize + pageSize)
+
+  const prev = () => setPage((p) => Math.max(0, p - 1))
+  const next = () => setPage((p) => Math.min(totalPages - 1, p + 1))
 
   return (
     <div>
@@ -117,17 +138,83 @@ function ProjectList({ projects, loading, error, onEdit, onDelete, onRetry }) {
           </button>
         </div>
       ) : (
-        <AnimatePresence mode="popLayout">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {projects.map((p) => (
-              <ProjectCard key={p.id} project={p} onEdit={onEdit} onDelete={onDelete} />
-            ))}
-          </div>
-        </AnimatePresence>
+        <>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={page}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.28 }}
+              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+            >
+              {paginated.map((p) => (
+                <ProjectCard key={p.id} project={p} onEdit={onEdit} onDelete={onDelete} />
+              ))}
+            </motion.div>
+          </AnimatePresence>
+
+          {/* ── Paginación ── */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-8 glass-card px-5 py-3">
+              {/* Info */}
+              <span className="font-mono text-xs text-textDim">
+                {page * pageSize + 1}–{Math.min(page * pageSize + pageSize, projects.length)}{' '}
+                de {projects.length}
+                <span className="hidden sm:inline ml-1">
+                  · mostrando {pageSize}/pág
+                </span>
+              </span>
+
+              {/* Controles */}
+              <div className="flex items-center gap-2">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={prev}
+                  disabled={page === 0}
+                  id="dashboard-projects-prev"
+                  aria-label="Página anterior"
+                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 text-textDim hover:border-accent hover:text-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                >
+                  <span className="material-symbols-outlined text-base">chevron_left</span>
+                </motion.button>
+
+                {/* Dots */}
+                <div className="flex items-center gap-1.5">
+                  {Array.from({ length: totalPages }).map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setPage(i)}
+                      id={`dashboard-page-dot-${i}`}
+                      aria-label={`Página ${i + 1}`}
+                      className={`rounded-full transition-all duration-300 ${
+                        i === page ? 'w-5 h-2 bg-accent' : 'w-2 h-2 bg-white/20 hover:bg-white/40'
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={next}
+                  disabled={page === totalPages - 1}
+                  id="dashboard-projects-next"
+                  aria-label="Página siguiente"
+                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 text-textDim hover:border-accent hover:text-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                >
+                  <span className="material-symbols-outlined text-base">chevron_right</span>
+                </motion.button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   )
 }
+
 
 /* ────────────── NEW PROJECT ────────────── */
 function NewProject({ onAdd }) {
