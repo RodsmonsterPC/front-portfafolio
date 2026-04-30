@@ -33,16 +33,11 @@ export default function Navbar() {
       className="sticky top-0 z-50 glass-card mx-4 mt-4 mb-6 px-6 py-4 flex items-center justify-between"
       style={{ backdropFilter: 'blur(20px)' }}
     >
-      {/* Logo + Language Switch */}
-      <div className="flex items-center gap-4">
-        <Link to="/" className="flex items-center gap-2 text-accent font-black text-lg tracking-wider">
-          <span className="material-symbols-outlined text-xl">terminal</span>
-          <span>RODOLFO.DEV</span>
-        </Link>
-        <div className="hidden md:block">
-          <LanguageSwitch />
-        </div>
-      </div>
+      {/* Logo */}
+      <Link to="/" className="flex items-center gap-2 text-accent font-black text-lg tracking-wider">
+        <span className="material-symbols-outlined text-xl">terminal</span>
+        <span>RODOLFO.DEV</span>
+      </Link>
 
       {/* Desktop Nav */}
       <nav className="hidden md:flex items-center gap-8">
@@ -65,6 +60,8 @@ export default function Navbar() {
           <>
             {!isDashboard && (
               <>
+                {/* Switch siempre antes de Dashboard o CV */}
+                <LanguageSwitch />
                 {isAuth && (
                   <Link
                     to="/dashboard"
