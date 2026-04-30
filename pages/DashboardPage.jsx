@@ -7,14 +7,16 @@ import Sidebar from '../components/layout/Sidebar'
 import ProjectCard from '../components/dashboard/ProjectCard'
 import ProjectForm from '../components/dashboard/ProjectForm'
 import DeleteModal from '../components/dashboard/DeleteModal'
+import SkillCard from '../components/dashboard/SkillCard'
+import SkillForm from '../components/dashboard/SkillForm'
 import { useProjects } from '../hooks/useProjects'
+import { useSkills } from '../hooks/useSkills'
 
 /* ─── Toast helpers ─── */
 const toastStyle = {
   style: { background: '#141417', color: '#e2e2e6', border: '1px solid rgba(0,240,255,0.3)' },
   iconTheme: { primary: '#00f0ff', secondary: '#0a0a0c' },
 }
-
 const toastError = {
   style: { background: '#141417', color: '#e2e2e6', border: '1px solid rgba(255,80,80,0.4)' },
   iconTheme: { primary: '#ff5050', secondary: '#0a0a0c' },
@@ -110,11 +112,7 @@ function ProjectList({ projects, loading, error, onEdit, onDelete, onRetry }) {
           <span className="material-symbols-outlined text-textDim text-6xl">folder_open</span>
           <p className="text-2xl font-black text-textDim">Sin proyectos</p>
           <p className="text-textDim">Crea tu primer proyecto para empezar.</p>
-          <button
-            onClick={() => navigate('/dashboard/nuevo')}
-            className="btn-primary mt-4"
-            id="empty-new-project-btn"
-          >
+          <button onClick={() => navigate('/dashboard/nuevo')} className="btn-primary mt-4" id="empty-new-project-btn">
             CREAR PROYECTO
           </button>
         </div>
@@ -162,13 +160,197 @@ function NewProject({ onAdd }) {
   )
 }
 
+/* ────────────── SKILLS MANAGER ────────────── */
+function SkillsManager() {
+  const { skills, loading, error, addSkill, updateSkill, deleteSkill, refetch } = useSkills()
+  const [editTarget, setEditTarget]     = useState(null)
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [showForm, setShowForm]         = useState(false)
+  const [saving, setSaving]             = useState(false)
+
+  const handleAdd = async (data) => {
+    setSaving(true)
+    try {
+      await addSkill(data)
+      toast.success('¡Tecnología agregada!', toastStyle)
+      setShowForm(false)
+    } catch (err) {
+      toast.error(err.message || 'Error al agregar', toastError)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleEdit = async (data) => {
+    setSaving(true)
+    try {
+      await updateSkill(editTarget.id, data)
+      toast.success('¡Tecnología actualizada!', toastStyle)
+      setEditTarget(null)
+    } catch (err) {
+      toast.error(err.message || 'Error al actualizar', toastError)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteSkill(deleteTarget.id)
+      toast.success('Tecnología eliminada.', toastStyle)
+    } catch (err) {
+      toast.error(err.message || 'Error al eliminar', toastError)
+    } finally {
+      setDeleteTarget(null)
+    }
+  }
+
+  return (
+    <div>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <p className="font-mono text-accent text-xs uppercase tracking-widest mb-1">STACK_TECNOLOGICO.v1</p>
+          <h1 className="text-4xl font-black">Stack / Skills</h1>
+        </div>
+        <motion.button
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.97 }}
+          onClick={() => { setShowForm(true); setEditTarget(null) }}
+          className="btn-primary flex items-center gap-2"
+          id="new-skill-btn"
+        >
+          <span className="material-symbols-outlined text-xl">add</span>
+          NUEVA TECNOLOGÍA
+        </motion.button>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+        {[
+          { label: 'Total Skills', value: skills.length, icon: 'psychology' },
+          { label: 'Dominio Prom.', value: skills.length ? Math.round(skills.reduce((s, k) => s + k.percent, 0) / skills.length) + '%' : '—', icon: 'trending_up' },
+          { label: 'Nivel Top', value: skills.length ? Math.max(...skills.map((s) => s.percent)) + '%' : '—', icon: 'star' },
+        ].map((s) => (
+          <div key={s.label} className="glass-card p-5 flex items-center gap-4">
+            <span className="material-symbols-outlined text-accent text-3xl">{s.icon}</span>
+            <div>
+              <p className="text-3xl font-black text-accent">{s.value}</p>
+              <p className="text-xs text-textDim uppercase tracking-wider">{s.label}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Content */}
+      {loading && skills.length === 0 ? (
+        <LoadingState />
+      ) : error ? (
+        <ErrorState message={error} onRetry={refetch} />
+      ) : skills.length === 0 ? (
+        <div className="glass-card p-16 text-center flex flex-col items-center gap-4">
+          <span className="material-symbols-outlined text-textDim text-6xl">psychology</span>
+          <p className="text-2xl font-black text-textDim">Sin tecnologías</p>
+          <p className="text-textDim">Agrega tu primera tecnología al stack.</p>
+          <button onClick={() => setShowForm(true)} className="btn-primary mt-4" id="empty-new-skill-btn">
+            AGREGAR TECNOLOGÍA
+          </button>
+        </div>
+      ) : (
+        <AnimatePresence mode="popLayout">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {skills.map((skill, i) => (
+              <SkillCard
+                key={skill.id}
+                skill={skill}
+                index={i}
+                onEdit={(s) => { setEditTarget(s); setShowForm(false) }}
+                onDelete={setDeleteTarget}
+              />
+            ))}
+          </div>
+        </AnimatePresence>
+      )}
+
+      {/* ── Modal: Crear skill ── */}
+      <AnimatePresence>
+        {showForm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+            style={{ background: 'rgba(10,10,12,0.85)', backdropFilter: 'blur(6px)' }}
+            onClick={() => setShowForm(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: 'spring', damping: 20 }}
+              className="glass-card p-8 w-full max-w-lg my-8"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-black">Nueva Tecnología</h2>
+                <button onClick={() => setShowForm(false)} className="text-textDim hover:text-accent" id="close-skill-form">
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+              <SkillForm onSave={handleAdd} onCancel={() => setShowForm(false)} saving={saving} />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Modal: Editar skill ── */}
+      <AnimatePresence>
+        {editTarget && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+            style={{ background: 'rgba(10,10,12,0.85)', backdropFilter: 'blur(6px)' }}
+            onClick={() => setEditTarget(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: 'spring', damping: 20 }}
+              className="glass-card p-8 w-full max-w-lg my-8"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-black">Editar Tecnología</h2>
+                <button onClick={() => setEditTarget(null)} className="text-textDim hover:text-accent" id="close-edit-skill">
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+              <SkillForm initial={editTarget} onSave={handleEdit} onCancel={() => setEditTarget(null)} saving={saving} />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Modal: Confirmar eliminación ── */}
+      <DeleteModal
+        project={deleteTarget ? { name: deleteTarget.name } : null}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
+    </div>
+  )
+}
+
 /* ────────────── DASHBOARD ROOT ────────────── */
 export default function DashboardPage() {
   const { projects, loading, error, addProject, updateProject, deleteProject, refetch } = useProjects()
-  const [editProject, setEditProject] = useState(null)
+  const [editProject, setEditProject]   = useState(null)
   const [deleteTarget, setDeleteTarget] = useState(null)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [saving, setSaving] = useState(false)
+  const [sidebarOpen, setSidebarOpen]   = useState(false)
+  const [saving, setSaving]             = useState(false)
 
   const handleEdit = (project) => setEditProject(project)
 
@@ -268,11 +450,12 @@ export default function DashboardPage() {
               }
             />
             <Route path="/nuevo" element={<NewProject onAdd={addProject} />} />
+            <Route path="/skills" element={<SkillsManager />} />
           </Routes>
         </main>
       </div>
 
-      {/* Edit Modal */}
+      {/* Edit Project Modal */}
       <AnimatePresence>
         {editProject && (
           <motion.div
@@ -293,11 +476,7 @@ export default function DashboardPage() {
             >
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-black">Editar Proyecto</h2>
-                <button
-                  onClick={() => setEditProject(null)}
-                  className="text-textDim hover:text-accent"
-                  id="close-edit-modal"
-                >
+                <button onClick={() => setEditProject(null)} className="text-textDim hover:text-accent" id="close-edit-modal">
                   <span className="material-symbols-outlined">close</span>
                 </button>
               </div>
@@ -312,7 +491,7 @@ export default function DashboardPage() {
         )}
       </AnimatePresence>
 
-      {/* Delete Modal */}
+      {/* Delete Project Modal */}
       <DeleteModal
         project={deleteTarget}
         onConfirm={handleConfirmDelete}

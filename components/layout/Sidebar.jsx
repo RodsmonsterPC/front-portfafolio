@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 const links = [
   { to: '/dashboard', label: 'Proyectos', icon: 'grid_view', end: true },
   { to: '/dashboard/nuevo', label: 'Nuevo Proyecto', icon: 'add_circle' },
+  { to: '/dashboard/skills', label: 'Stack / Skills', icon: 'psychology' },
 ]
 
 export default function Sidebar({ onClose }) {
