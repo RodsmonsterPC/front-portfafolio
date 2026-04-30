@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import { useLanguage } from '../../hooks/useLanguage'
 
 const CARDS_PER_PAGE = 4
 
 function ProjectCard({ project, index }) {
+  const { t } = useLanguage()
+
   return (
     <motion.div
       key={project.id}
@@ -42,7 +45,7 @@ function ProjectCard({ project, index }) {
             className="text-accent font-bold text-sm hover:underline"
             id={`project-detail-${project.id}`}
           >
-            EXPLORAR NÚCLEO →
+            {t.projects.explore}
           </Link>
           {project.demoLink && (
             <a
@@ -51,7 +54,7 @@ function ProjectCard({ project, index }) {
               rel="noreferrer"
               className="text-textDim font-semibold text-sm hover:text-accent transition-colors"
             >
-              DEMO ↗
+              {t.projects.demo}
             </a>
           )}
         </div>
@@ -61,6 +64,7 @@ function ProjectCard({ project, index }) {
 }
 
 export default function ProjectsSection({ projects }) {
+  const { t } = useLanguage()
   const [page, setPage] = useState(0)
 
   const totalPages = Math.ceil(projects.length / CARDS_PER_PAGE)
@@ -75,12 +79,12 @@ export default function ProjectsSection({ projects }) {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-4">
         <div>
           <p className="font-mono text-accent text-xs mb-1 uppercase tracking-widest">
-            LISTADO_PROYECTOS.v1
+            {t.projects.tag}
           </p>
-          <h2 className="text-4xl font-black">Proyectos</h2>
+          <h2 className="text-4xl font-black">{t.projects.title}</h2>
         </div>
 
-        {/* Navegación de páginas */}
+        {/* Paginación */}
         {totalPages > 1 && (
           <div className="flex items-center gap-3">
             <motion.button
@@ -89,20 +93,19 @@ export default function ProjectsSection({ projects }) {
               onClick={prev}
               disabled={page === 0}
               id="projects-prev-btn"
-              aria-label="Página anterior"
+              aria-label={t.projects.prevPage}
               className="w-9 h-9 flex items-center justify-center rounded-lg border border-white/10 text-textDim hover:border-accent hover:text-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
             >
               <span className="material-symbols-outlined text-lg">chevron_left</span>
             </motion.button>
 
-            {/* Dots */}
             <div className="flex items-center gap-1.5">
               {Array.from({ length: totalPages }).map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setPage(i)}
                   id={`projects-dot-${i}`}
-                  aria-label={`Ir a página ${i + 1}`}
+                  aria-label={`${i + 1}`}
                   className={`rounded-full transition-all duration-300 ${
                     i === page
                       ? 'w-6 h-2 bg-accent'
@@ -118,7 +121,7 @@ export default function ProjectsSection({ projects }) {
               onClick={next}
               disabled={page === totalPages - 1}
               id="projects-next-btn"
-              aria-label="Página siguiente"
+              aria-label={t.projects.nextPage}
               className="w-9 h-9 flex items-center justify-center rounded-lg border border-white/10 text-textDim hover:border-accent hover:text-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
             >
               <span className="material-symbols-outlined text-lg">chevron_right</span>
@@ -131,7 +134,7 @@ export default function ProjectsSection({ projects }) {
         )}
       </div>
 
-      {/* Grid con animación de cambio de página */}
+      {/* Grid */}
       <AnimatePresence mode="wait">
         <motion.div
           key={page}
@@ -151,7 +154,7 @@ export default function ProjectsSection({ projects }) {
       {projects.length === 0 && (
         <div className="glass-card p-16 text-center text-textDim">
           <span className="material-symbols-outlined text-5xl mb-4 block">folder_open</span>
-          <p className="text-lg font-semibold">No hay proyectos aún.</p>
+          <p className="text-lg font-semibold">{t.projects.empty}</p>
         </div>
       )}
     </section>

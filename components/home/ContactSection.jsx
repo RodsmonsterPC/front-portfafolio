@@ -2,14 +2,9 @@ import { motion } from 'framer-motion'
 import { useState, useRef } from 'react'
 import emailjs from '@emailjs/browser'
 import toast from 'react-hot-toast'
+import { useLanguage } from '../../hooks/useLanguage'
 
-// ─── EmailJS Configuration ──────────────────────────────────────────────────
-// 1. Crea cuenta en https://www.emailjs.com/
-// 2. Crea un Email Service (Gmail, Outlook, etc.) → copia el Service ID
-// 3. Crea un Email Template con variables: {{from_name}}, {{from_email}}, {{message}}
-//    y pon tu correo destino en "To Email": rodolfo.perez01@iest.edu.mx
-// 4. Ve a Account → API Keys → copia tu Public Key
-// 5. Reemplaza los valores de abajo con los tuyos
+// ─── EmailJS Configuration ────────────────────────────────────────────────────
 const EMAILJS_SERVICE_ID  = 'service_3y814nk'
 const EMAILJS_TEMPLATE_ID = 'template_0rltr11'
 const EMAILJS_PUBLIC_KEY  = 'iMocoRn1pAd5CAfNj'
@@ -24,6 +19,7 @@ const toastStyle = {
 }
 
 export default function ContactSection() {
+  const { t } = useLanguage()
   const formRef = useRef(null)
   const [form, setForm] = useState({ from_name: '', from_email: '', message: '' })
   const [errors, setErrors] = useState({})
@@ -33,15 +29,15 @@ export default function ContactSection() {
   const validate = () => {
     const errs = {}
     if (!form.from_name.trim())
-      errs.from_name = 'El nombre es obligatorio.'
+      errs.from_name = t.contact.nameRequired
     if (!form.from_email.trim())
-      errs.from_email = 'El correo es obligatorio.'
+      errs.from_email = t.contact.emailRequired
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.from_email))
-      errs.from_email = 'Introduce un correo electrónico válido.'
+      errs.from_email = t.contact.emailInvalid
     if (!form.message.trim())
-      errs.message = 'El mensaje es obligatorio.'
+      errs.message = t.contact.messageRequired
     else if (form.message.trim().length < 10)
-      errs.message = 'El mensaje debe tener al menos 10 caracteres.'
+      errs.message = t.contact.messageTooShort
     return errs
   }
 
@@ -61,10 +57,10 @@ export default function ContactSection() {
         EMAILJS_PUBLIC_KEY
       )
       setForm({ from_name: '', from_email: '', message: '' })
-      toast.success('¡Transmisión enviada correctamente!', toastStyle)
+      toast.success(t.contact.successMsg, toastStyle)
     } catch (err) {
       console.error('EmailJS error:', err)
-      toast.error('Error al enviar. Intenta nuevamente.', {
+      toast.error(t.contact.errorMsg, {
         style: toastStyle.style,
         iconTheme: { primary: '#ff4d4d', secondary: '#0a0a0c' },
       })
@@ -81,7 +77,6 @@ export default function ContactSection() {
     }
   }
 
-  // ── Render ────────────────────────────────────────────────────────────────
   return (
     <section id="contacto" className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8 mb-6">
 
@@ -93,21 +88,21 @@ export default function ContactSection() {
         transition={{ duration: 0.7 }}
         className="glass-card p-10"
       >
-        <h2 className="text-3xl font-black mb-8">Canal de Contacto</h2>
+        <h2 className="text-3xl font-black mb-8">{t.contact.title}</h2>
         <div className="space-y-6">
           <div>
-            <p className="text-xs uppercase tracking-widest text-textDim font-semibold mb-1">E-mail</p>
+            <p className="text-xs uppercase tracking-widest text-textDim font-semibold mb-1">{t.contact.email}</p>
             <p className="font-mono text-accent text-base">rodolfo.perez01@iest.edu.mx</p>
           </div>
           <div>
-            <p className="text-xs uppercase tracking-widest text-textDim font-semibold mb-1">Ubicación</p>
-            <p className="text-base">Tampico, Tamps.</p>
+            <p className="text-xs uppercase tracking-widest text-textDim font-semibold mb-1">{t.contact.location}</p>
+            <p className="text-base">{t.contact.locationValue}</p>
           </div>
           <div>
-            <p className="text-xs uppercase tracking-widest text-textDim font-semibold mb-1">Disponibilidad</p>
+            <p className="text-xs uppercase tracking-widest text-textDim font-semibold mb-1">{t.contact.availability}</p>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-              <span className="text-accent text-sm font-mono">ACTIVO</span>
+              <span className="text-accent text-sm font-mono">{t.contact.availabilityValue}</span>
             </div>
           </div>
         </div>
@@ -134,7 +129,7 @@ export default function ContactSection() {
         {/* Name */}
         <div>
           <label htmlFor="contact-name" className="block text-xs uppercase tracking-widest text-textDim font-semibold mb-2">
-            Nombre Completo <span className="text-red-400">*</span>
+            {t.contact.nameLabel} <span className="text-red-400">*</span>
           </label>
           <input
             id="contact-name"
@@ -142,7 +137,7 @@ export default function ContactSection() {
             type="text"
             value={form.from_name}
             onChange={handleChange}
-            placeholder="Ej: Juan Pérez"
+            placeholder={t.contact.namePlaceholder}
             className={`form-input ${errors.from_name ? 'border-red-500/60 focus:border-red-500/80' : ''}`}
           />
           {errors.from_name && (
@@ -156,7 +151,7 @@ export default function ContactSection() {
         {/* Email */}
         <div>
           <label htmlFor="contact-email" className="block text-xs uppercase tracking-widest text-textDim font-semibold mb-2">
-            Correo Electrónico <span className="text-red-400">*</span>
+            {t.contact.emailLabel} <span className="text-red-400">*</span>
           </label>
           <input
             id="contact-email"
@@ -164,7 +159,7 @@ export default function ContactSection() {
             type="email"
             value={form.from_email}
             onChange={handleChange}
-            placeholder="juan@ejemplo.com"
+            placeholder={t.contact.emailPlaceholder}
             className={`form-input ${errors.from_email ? 'border-red-500/60 focus:border-red-500/80' : ''}`}
           />
           {errors.from_email && (
@@ -178,7 +173,7 @@ export default function ContactSection() {
         {/* Message */}
         <div>
           <label htmlFor="contact-message" className="block text-xs uppercase tracking-widest text-textDim font-semibold mb-2">
-            Mensaje <span className="text-red-400">*</span>
+            {t.contact.messageLabel} <span className="text-red-400">*</span>
           </label>
           <textarea
             id="contact-message"
@@ -186,7 +181,7 @@ export default function ContactSection() {
             rows={4}
             value={form.message}
             onChange={handleChange}
-            placeholder="Describe tu proyecto o consulta..."
+            placeholder={t.contact.messagePlaceholder}
             className={`form-input resize-none ${errors.message ? 'border-red-500/60 focus:border-red-500/80' : ''}`}
           />
           {errors.message && (
@@ -208,12 +203,12 @@ export default function ContactSection() {
           {sending ? (
             <>
               <span className="material-symbols-outlined animate-spin text-base">progress_activity</span>
-              ENVIANDO...
+              {t.contact.sending}
             </>
           ) : (
             <>
               <span className="material-symbols-outlined text-base">send</span>
-              ENVIAR TRANSMISIÓN
+              {t.contact.submit}
             </>
           )}
         </motion.button>

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
+import { LanguageProvider } from './hooks/useLanguage'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import HomePage from './pages/HomePage'
 import DashboardPage from './pages/DashboardPage'
@@ -9,7 +10,8 @@ import LoginPage from './pages/LoginPage'
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
@@ -36,7 +38,8 @@ export default function App() {
             }
           />
         </Routes>
-      </AuthProvider>
+        </AuthProvider>
+      </LanguageProvider>
     </BrowserRouter>
   )
 }

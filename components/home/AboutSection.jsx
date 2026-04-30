@@ -1,7 +1,10 @@
 import { motion } from 'framer-motion'
 import profileImg from '../../public/expoconnect-1995.jpg'
+import { useLanguage } from '../../hooks/useLanguage'
 
 export default function AboutSection() {
+  const { t } = useLanguage()
+
   return (
     <section id="sobre-mi" className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
       {/* Photo */}
@@ -30,14 +33,19 @@ export default function AboutSection() {
       >
         <div className="flex items-center gap-3 mb-6">
           <span className="material-symbols-outlined text-accent">person</span>
-          <h2 className="text-3xl font-black">Desarrollador Fullstack</h2>
+          <h2 className="text-3xl font-black">{t.about.title}</h2>
         </div>
         <p className="text-textDim text-lg leading-relaxed mb-4">
-          Hello, my name is <span className="text-textMain font-semibold">Rodolfo Pérez Cerecedo</span>, 27 years old, from Tampico, Tamaulipas, México.
-          A Junior programmer with experience on <span className="text-accent font-semibold">JavaScript, Node.js, Git, Vite.js, Next.js and React</span>.
+          {t.about.bio1}{' '}
+          <span className="text-textMain font-semibold">Rodolfo Pérez Cerecedo</span>
+          {t.about.bio1End}{' '}
+          <span className="text-accent font-semibold">JavaScript, Node.js, Git, Vite.js, Next.js {t.about.bio2And} React</span>.
         </p>
         <p className="text-textDim leading-relaxed opacity-80">
-          Updating to new technologies, management on unrelated databases, knowledge of <span className="text-textMain font-medium">AWS</span> and <span className="text-textMain font-medium">Google Cloud</span>.
+          {t.about.bio2}{' '}
+          <span className="text-textMain font-medium">AWS</span>{' '}
+          {t.about.bio2And}{' '}
+          <span className="text-textMain font-medium">Google Cloud</span>.
         </p>
       </motion.div>
     </section>

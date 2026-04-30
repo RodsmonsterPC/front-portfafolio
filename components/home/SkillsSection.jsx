@@ -1,5 +1,6 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
+import { useLanguage } from '../../hooks/useLanguage'
 
 const skills = [
   { name: 'React.js / Next.js', percent: 95 },
@@ -33,6 +34,8 @@ function SkillBar({ name, percent, delay }) {
 }
 
 export default function SkillsSection() {
+  const { t } = useLanguage()
+
   return (
     <motion.section
       id="habilidades"
@@ -44,7 +47,7 @@ export default function SkillsSection() {
     >
       <div className="flex items-center gap-3 mb-8">
         <span className="material-symbols-outlined text-accent">code</span>
-        <h2 className="text-3xl font-black">Stack Tecnológico</h2>
+        <h2 className="text-3xl font-black">{t.skills.title}</h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {skills.map((skill, i) => (

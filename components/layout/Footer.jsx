@@ -1,9 +1,12 @@
+import { useLanguage } from '../../hooks/useLanguage'
+
 export default function Footer() {
+  const { t } = useLanguage()
+
   return (
     <footer className="border-t border-white/5 py-12 mt-20 text-center">
       <p className="text-textDim text-sm font-mono">
-        © {new Date().getFullYear()} Rodolfo Pérez Cerecedo. Todos los datos, proyectos y métricas
-        mostrados son para fines de portafolio.
+        © {new Date().getFullYear()} Rodolfo Pérez Cerecedo. {t.footer.rights}
       </p>
       <div className="mt-6 flex justify-center gap-8">
         {[

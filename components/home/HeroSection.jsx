@@ -1,6 +1,14 @@
 import { motion } from 'framer-motion'
+import { useLanguage } from '../../hooks/useLanguage'
 
 export default function HeroSection({ projectCount = 0 }) {
+  const { t } = useLanguage()
+
+  const stats = [
+    { value: '5+', label: t.hero.statExperience, icon: 'military_tech' },
+    { value: `${projectCount}`, label: t.hero.statProjects, icon: 'rocket_launch' },
+  ]
+
   return (
     <section className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-6">
       {/* Main Hero */}
@@ -22,11 +30,11 @@ export default function HeroSection({ projectCount = 0 }) {
         {/* Status badge */}
         <div className="flex items-center gap-2 font-mono text-accent text-xs mb-8 relative z-10">
           <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-          SISTEMA ACTIVO: DISPONIBLE PARA PROYECTOS
+          {t.hero.statusBadge}
         </div>
 
         <h1 className="text-5xl xl:text-7xl font-black leading-tight tracking-tight mb-6 relative z-10">
-          Bienvenido al Portfolio de{' '}
+          {t.hero.greeting}{' '}
           <span className="text-accent text-glow block mt-2">
             Rodolfo Pérez
             <br />
@@ -35,9 +43,9 @@ export default function HeroSection({ projectCount = 0 }) {
         </h1>
 
         <p className="text-textDim text-lg max-w-xl mb-10 relative z-10">
-          Desarrollador Web Experto con{' '}
-          <span className="text-textMain font-semibold">5 años de experiencia</span> creando
-          infraestructuras digitales de alto rendimiento y experiencias de usuario inmersivas.
+          {t.hero.description}{' '}
+          <span className="text-textMain font-semibold">{t.hero.yearsExperience}</span>{' '}
+          {t.hero.descriptionEnd}
         </p>
 
         <div className="flex flex-wrap gap-4 relative z-10">
@@ -48,7 +56,7 @@ export default function HeroSection({ projectCount = 0 }) {
             className="btn-primary"
             id="hero-cta-projects"
           >
-            EJECUTAR PROYECTOS
+            {t.hero.ctaProjects}
           </motion.a>
           <motion.a
             href="#contacto"
@@ -57,17 +65,14 @@ export default function HeroSection({ projectCount = 0 }) {
             className="btn-ghost"
             id="hero-cta-contact"
           >
-            CONTACTO
+            {t.hero.ctaContact}
           </motion.a>
         </div>
       </motion.div>
 
       {/* Stats */}
       <div className="lg:col-span-2 grid grid-rows-2 gap-6">
-        {[
-          { value: '5+', label: 'Años de Experiencia', icon: 'military_tech' },
-          { value: `${projectCount}`, label: 'Proyectos Desplegados', icon: 'rocket_launch' },
-        ].map((stat, i) => (
+        {stats.map((stat, i) => (
           <motion.div
             key={stat.label}
             initial={{ opacity: 0, x: 40 }}

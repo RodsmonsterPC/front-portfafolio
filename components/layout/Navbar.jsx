@@ -2,19 +2,22 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
+import { useLanguage } from '../../hooks/useLanguage'
+import LanguageSwitch from './LanguageSwitch'
 
 export default function Navbar() {
   const location = useLocation()
   const navigate = useNavigate()
   const { isAuth, checking, logout } = useAuth()
+  const { t } = useLanguage()
   const isDashboard = location.pathname.startsWith('/dashboard')
   const [menuOpen, setMenuOpen] = useState(false)
 
   const navLinks = [
-    { to: '/#sobre-mi', label: 'Sobre Mí' },
-    { to: '/#habilidades', label: 'Habilidades' },
-    { to: '/#proyectos', label: 'Proyectos' },
-    { to: '/#contacto', label: 'Contacto' },
+    { to: '/#sobre-mi',   label: t.nav.aboutMe  },
+    { to: '/#habilidades', label: t.nav.skills   },
+    { to: '/#proyectos',   label: t.nav.projects },
+    { to: '/#contacto',    label: t.nav.contact  },
   ]
 
   const handleLogout = () => {
@@ -46,7 +49,7 @@ export default function Navbar() {
           ))}
         {isDashboard && (
           <Link to="/" className="nav-link">
-            ← Portafolio
+            {t.nav.backToPortfolio}
           </Link>
         )}
       </nav>
@@ -57,13 +60,12 @@ export default function Navbar() {
           <>
             {!isDashboard && (
               <>
-                {/* Mostrar Dashboard solo si está autenticado */}
                 {isAuth && (
                   <Link
                     to="/dashboard"
                     className="nav-link border border-white/10 px-4 py-2 rounded-lg hover:border-accent hover:text-accent transition-all"
                   >
-                    Dashboard
+                    {t.nav.dashboard}
                   </Link>
                 )}
                 <a
@@ -71,20 +73,24 @@ export default function Navbar() {
                   download
                   className="tag-badge cursor-pointer hover:bg-accent hover:text-bgBase transition-all px-4 py-2"
                 >
-                  DESCARGAR CV
+                  {t.nav.downloadCV}
                 </a>
               </>
             )}
-            {/* Logout si está autenticado */}
+
+            {/* Language Switch — siempre visible en desktop */}
+            <LanguageSwitch />
+
+            {/* Logout */}
             {isAuth && (
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-1.5 text-textDim hover:text-red-400 transition-colors text-xs font-semibold uppercase tracking-wider"
                 id="logout-btn"
-                title="Cerrar sesión"
+                title={t.nav.closeSession}
               >
                 <span className="material-symbols-outlined text-lg">logout</span>
-                Salir
+                {t.nav.logout}
               </button>
             )}
           </>
@@ -119,22 +125,27 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
-          {/* Dashboard solo si autenticado */}
           {isAuth && (
             <Link
               to="/dashboard"
               className="nav-link text-base"
               onClick={() => setMenuOpen(false)}
             >
-              Dashboard →
+              {t.nav.dashboard} →
             </Link>
           )}
+
+          {/* Language switch en mobile */}
+          <div className="pt-2 border-t border-white/10">
+            <LanguageSwitch />
+          </div>
+
           {isAuth && (
             <button
               onClick={() => { handleLogout(); setMenuOpen(false) }}
               className="text-red-400 text-sm font-semibold uppercase tracking-wider text-left"
             >
-              Cerrar sesión
+              {t.nav.closeSession}
             </button>
           )}
         </motion.div>
