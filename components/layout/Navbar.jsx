@@ -33,11 +33,16 @@ export default function Navbar() {
       className="sticky top-0 z-50 glass-card mx-4 mt-4 mb-6 px-6 py-4 flex items-center justify-between"
       style={{ backdropFilter: 'blur(20px)' }}
     >
-      {/* Logo */}
-      <Link to="/" className="flex items-center gap-2 text-accent font-black text-lg tracking-wider">
-        <span className="material-symbols-outlined text-xl">terminal</span>
-        <span>RODOLFO.DEV</span>
-      </Link>
+      {/* Logo + Language Switch */}
+      <div className="flex items-center gap-4">
+        <Link to="/" className="flex items-center gap-2 text-accent font-black text-lg tracking-wider">
+          <span className="material-symbols-outlined text-xl">terminal</span>
+          <span>RODOLFO.DEV</span>
+        </Link>
+        <div className="hidden md:block">
+          <LanguageSwitch />
+        </div>
+      </div>
 
       {/* Desktop Nav */}
       <nav className="hidden md:flex items-center gap-8">
@@ -77,9 +82,6 @@ export default function Navbar() {
                 </a>
               </>
             )}
-
-            {/* Language Switch — siempre visible en desktop */}
-            <LanguageSwitch />
 
             {/* Logout */}
             {isAuth && (

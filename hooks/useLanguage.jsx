@@ -103,7 +103,7 @@ const translations = {
     // Hero
     hero: {
       statusBadge: 'SYSTEM ACTIVE: AVAILABLE FOR PROJECTS',
-      greeting: "Welcome to Rodolfo Pérez Cerecedo's Portfolio",
+      greeting: "Welcome to my Portfolio",
       description: 'Expert Web Developer with',
       yearsExperience: '5 years of experience',
       descriptionEnd: 'building high-performance digital infrastructures and immersive user experiences.',
