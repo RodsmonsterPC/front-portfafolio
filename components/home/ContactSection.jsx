@@ -25,19 +25,19 @@ const toastStyle = {
 
 export default function ContactSection() {
   const formRef = useRef(null)
-  const [form, setForm] = useState({ name: '', email: '', message: '' })
+  const [form, setForm] = useState({ from_name: '', from_email: '', message: '' })
   const [errors, setErrors] = useState({})
   const [sending, setSending] = useState(false)
 
   // ── Validation ────────────────────────────────────────────────────────────
   const validate = () => {
     const errs = {}
-    if (!form.name.trim())
-      errs.name = 'El nombre es obligatorio.'
-    if (!form.email.trim())
-      errs.email = 'El correo es obligatorio.'
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      errs.email = 'Introduce un correo electrónico válido.'
+    if (!form.from_name.trim())
+      errs.from_name = 'El nombre es obligatorio.'
+    if (!form.from_email.trim())
+      errs.from_email = 'El correo es obligatorio.'
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.from_email))
+      errs.from_email = 'Introduce un correo electrónico válido.'
     if (!form.message.trim())
       errs.message = 'El mensaje es obligatorio.'
     else if (form.message.trim().length < 10)
@@ -60,7 +60,7 @@ export default function ContactSection() {
         formRef.current,
         EMAILJS_PUBLIC_KEY
       )
-      setForm({ name: '', email: '', message: '' })
+      setForm({ from_name: '', from_email: '', message: '' })
       toast.success('¡Transmisión enviada correctamente!', toastStyle)
     } catch (err) {
       console.error('EmailJS error:', err)
@@ -140,15 +140,15 @@ export default function ContactSection() {
             id="contact-name"
             name="from_name"
             type="text"
-            value={form.name}
+            value={form.from_name}
             onChange={handleChange}
             placeholder="Ej: Juan Pérez"
-            className={`form-input ${errors.name ? 'border-red-500/60 focus:border-red-500/80' : ''}`}
+            className={`form-input ${errors.from_name ? 'border-red-500/60 focus:border-red-500/80' : ''}`}
           />
-          {errors.name && (
+          {errors.from_name && (
             <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
               <span className="material-symbols-outlined text-sm">error</span>
-              {errors.name}
+              {errors.from_name}
             </p>
           )}
         </div>
@@ -162,15 +162,15 @@ export default function ContactSection() {
             id="contact-email"
             name="from_email"
             type="email"
-            value={form.email}
+            value={form.from_email}
             onChange={handleChange}
             placeholder="juan@ejemplo.com"
-            className={`form-input ${errors.email ? 'border-red-500/60 focus:border-red-500/80' : ''}`}
+            className={`form-input ${errors.from_email ? 'border-red-500/60 focus:border-red-500/80' : ''}`}
           />
-          {errors.email && (
+          {errors.from_email && (
             <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
               <span className="material-symbols-outlined text-sm">error</span>
-              {errors.email}
+              {errors.from_email}
             </p>
           )}
         </div>
