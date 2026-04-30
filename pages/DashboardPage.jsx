@@ -140,43 +140,43 @@ function ProjectList({ projects, loading, error, onEdit, onDelete, onRetry }) {
       ) : (
         <>
           {/* ── Paginación superior — solo mobile ── */}
-          {totalPages > 1 && (
-            <div className="md:hidden mb-4 flex items-center justify-between glass-card px-5 py-3">
-              <span className="font-mono text-xs text-textDim">
-                {page * pageSize + 1}–{Math.min(page * pageSize + pageSize, projects.length)} de {projects.length}
-              </span>
-              <div className="flex items-center gap-2">
-                <motion.button
-                  whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-                  onClick={prev} disabled={page === 0}
-                  id="dashboard-projects-prev-top"
-                  aria-label="Página anterior"
-                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 text-textDim hover:border-accent hover:text-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                >
-                  <span className="material-symbols-outlined text-base">chevron_left</span>
-                </motion.button>
-                <div className="flex items-center gap-1.5">
-                  {Array.from({ length: totalPages }).map((_, i) => (
-                    <button
-                      key={i} onClick={() => setPage(i)}
-                      id={`dashboard-page-dot-top-${i}`}
-                      aria-label={`Página ${i + 1}`}
-                      className={`rounded-full transition-all duration-300 ${i === page ? 'w-5 h-2 bg-accent' : 'w-2 h-2 bg-white/20 hover:bg-white/40'}`}
-                    />
-                  ))}
-                </div>
-                <motion.button
-                  whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-                  onClick={next} disabled={page === totalPages - 1}
-                  id="dashboard-projects-next-top"
-                  aria-label="Página siguiente"
-                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 text-textDim hover:border-accent hover:text-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                >
-                  <span className="material-symbols-outlined text-base">chevron_right</span>
-                </motion.button>
+          <div className="md:hidden mb-4 flex items-center justify-between glass-card px-5 py-3">
+            <span className="font-mono text-xs text-textDim">
+              {projects.length > 0
+                ? `${page * pageSize + 1}–${Math.min(page * pageSize + pageSize, projects.length)} de ${projects.length}`
+                : '0 proyectos'}
+            </span>
+            <div className="flex items-center gap-2">
+              <motion.button
+                whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
+                onClick={prev} disabled={page === 0}
+                id="dashboard-projects-prev-top"
+                aria-label="Página anterior"
+                className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 text-textDim hover:border-accent hover:text-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                <span className="material-symbols-outlined text-base">chevron_left</span>
+              </motion.button>
+              <div className="flex items-center gap-1.5">
+                {Array.from({ length: totalPages }).map((_, i) => (
+                  <button
+                    key={i} onClick={() => setPage(i)}
+                    id={`dashboard-page-dot-top-${i}`}
+                    aria-label={`Página ${i + 1}`}
+                    className={`rounded-full transition-all duration-300 ${i === page ? 'w-5 h-2 bg-accent' : 'w-2 h-2 bg-white/20 hover:bg-white/40'}`}
+                  />
+                ))}
               </div>
+              <motion.button
+                whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
+                onClick={next} disabled={page === totalPages - 1}
+                id="dashboard-projects-next-top"
+                aria-label="Página siguiente"
+                className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 text-textDim hover:border-accent hover:text-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                <span className="material-symbols-outlined text-base">chevron_right</span>
+              </motion.button>
             </div>
-          )}
+          </div>
 
           <AnimatePresence mode="wait">
             <motion.div
@@ -194,46 +194,46 @@ function ProjectList({ projects, loading, error, onEdit, onDelete, onRetry }) {
           </AnimatePresence>
 
           {/* ── Paginación inferior — siempre visible ── */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between mt-8 glass-card px-5 py-3">
-              <span className="font-mono text-xs text-textDim">
-                {page * pageSize + 1}–{Math.min(page * pageSize + pageSize, projects.length)}{' '}
-                de {projects.length}
-                <span className="hidden sm:inline ml-1">· mostrando {pageSize}/pág</span>
-              </span>
-              <div className="flex items-center gap-2">
-                <motion.button
-                  whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-                  onClick={prev} disabled={page === 0}
-                  id="dashboard-projects-prev"
-                  aria-label="Página anterior"
-                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 text-textDim hover:border-accent hover:text-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                >
-                  <span className="material-symbols-outlined text-base">chevron_left</span>
-                </motion.button>
-                <div className="flex items-center gap-1.5">
-                  {Array.from({ length: totalPages }).map((_, i) => (
-                    <button
-                      key={i} onClick={() => setPage(i)}
-                      id={`dashboard-page-dot-${i}`}
-                      aria-label={`Página ${i + 1}`}
-                      className={`rounded-full transition-all duration-300 ${i === page ? 'w-5 h-2 bg-accent' : 'w-2 h-2 bg-white/20 hover:bg-white/40'}`}
-                    />
-                  ))}
-                </div>
-                <motion.button
-                  whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-                  onClick={next} disabled={page === totalPages - 1}
-                  id="dashboard-projects-next"
-                  aria-label="Página siguiente"
-                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 text-textDim hover:border-accent hover:text-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                >
-                  <span className="material-symbols-outlined text-base">chevron_right</span>
-                </motion.button>
+          <div className="flex items-center justify-between mt-8 glass-card px-5 py-3">
+            <span className="font-mono text-xs text-textDim">
+              {projects.length > 0
+                ? `${page * pageSize + 1}–${Math.min(page * pageSize + pageSize, projects.length)} de ${projects.length}`
+                : '0 proyectos'}
+              <span className="hidden sm:inline ml-1">· mostrando {pageSize}/pág</span>
+            </span>
+            <div className="flex items-center gap-2">
+              <motion.button
+                whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
+                onClick={prev} disabled={page === 0}
+                id="dashboard-projects-prev"
+                aria-label="Página anterior"
+                className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 text-textDim hover:border-accent hover:text-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                <span className="material-symbols-outlined text-base">chevron_left</span>
+              </motion.button>
+              <div className="flex items-center gap-1.5">
+                {Array.from({ length: totalPages }).map((_, i) => (
+                  <button
+                    key={i} onClick={() => setPage(i)}
+                    id={`dashboard-page-dot-${i}`}
+                    aria-label={`Página ${i + 1}`}
+                    className={`rounded-full transition-all duration-300 ${i === page ? 'w-5 h-2 bg-accent' : 'w-2 h-2 bg-white/20 hover:bg-white/40'}`}
+                  />
+                ))}
               </div>
+              <motion.button
+                whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
+                onClick={next} disabled={page === totalPages - 1}
+                id="dashboard-projects-next"
+                aria-label="Página siguiente"
+                className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 text-textDim hover:border-accent hover:text-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                <span className="material-symbols-outlined text-base">chevron_right</span>
+              </motion.button>
             </div>
-          )}
+          </div>
         </>
+
       )}
     </div>
   )
