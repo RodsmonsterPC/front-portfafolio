@@ -9,7 +9,7 @@ import ContactSection from '../components/home/ContactSection'
 import { useProjects } from '../hooks/useProjects'
 
 export default function HomePage() {
-  const { projects } = useProjects()
+  const { projects, loading } = useProjects()
 
   return (
     <div className="min-h-screen bg-bgBase">
@@ -19,10 +19,11 @@ export default function HomePage() {
         <HeroSection projectCount={projects.length} />
         <AboutSection />
         <SkillsSection />
-        <ProjectsSection projects={projects} />
+        <ProjectsSection projects={projects} loading={loading} />
         <ContactSection />
       </main>
       <Footer />
     </div>
   )
 }
+

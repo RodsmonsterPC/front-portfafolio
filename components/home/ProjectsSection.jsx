@@ -5,6 +5,30 @@ import { useLanguage } from '../../hooks/useLanguage'
 
 const CARDS_PER_PAGE = 4
 
+/* ─── Skeleton animado para cold-start ─── */
+function SkeletonCard({ index }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.08 }}
+      className="relative rounded-xl overflow-hidden border border-white/5"
+      style={{ aspectRatio: '16/9' }}
+    >
+      <div className="w-full h-full bg-white/5 animate-pulse" />
+      <div className="absolute inset-0 flex flex-col justify-end p-8">
+        <div className="flex gap-2 mb-3">
+          <div className="h-5 w-14 rounded-full bg-white/10 animate-pulse" />
+          <div className="h-5 w-10 rounded-full bg-white/10 animate-pulse" />
+        </div>
+        <div className="h-6 w-2/3 rounded bg-white/10 animate-pulse mb-2" />
+        <div className="h-4 w-full rounded bg-white/[0.07] animate-pulse mb-1" />
+        <div className="h-4 w-4/5 rounded bg-white/[0.07] animate-pulse" />
+      </div>
+    </motion.div>
+  )
+}
+
 function ProjectCard({ project, index }) {
   const { t } = useLanguage()
 
@@ -63,7 +87,7 @@ function ProjectCard({ project, index }) {
   )
 }
 
-export default function ProjectsSection({ projects }) {
+export default function ProjectsSection({ projects, loading }) {
   const { t } = useLanguage()
   const [page, setPage] = useState(0)
 
@@ -135,23 +159,32 @@ export default function ProjectsSection({ projects }) {
       </div>
 
       {/* Grid */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={page}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.35 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
-        >
-          {paginated.map((project, i) => (
-            <ProjectCard key={project.id} project={project} index={i} />
+      {loading && projects.length === 0 ? (
+        // Skeletons: sólo cuando no hay caché previo
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SkeletonCard key={i} index={i} />
           ))}
-        </motion.div>
-      </AnimatePresence>
+        </div>
+      ) : (
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={page}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.35 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
+            {paginated.map((project, i) => (
+              <ProjectCard key={project.id} project={project} index={i} />
+            ))}
+          </motion.div>
+        </AnimatePresence>
+      )}
 
-      {/* Estado vacío */}
-      {projects.length === 0 && (
+      {/* Estado vacío: sólo cuando terminó de cargar y no hay proyectos */}
+      {!loading && projects.length === 0 && (
         <div className="glass-card p-16 text-center text-textDim">
           <span className="material-symbols-outlined text-5xl mb-4 block">folder_open</span>
           <p className="text-lg font-semibold">{t.projects.empty}</p>
