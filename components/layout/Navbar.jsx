@@ -4,12 +4,14 @@ import { useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../hooks/useLanguage'
 import LanguageSwitch from './LanguageSwitch'
+import cvES from '../../cv/Resumen-Foto-2026.pdf'
+import cvEN from '../../cv/Resume-Photo-2026.pdf'
 
 export default function Navbar() {
   const location = useLocation()
   const navigate = useNavigate()
   const { isAuth, checking, logout } = useAuth()
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
   const isDashboard = location.pathname.startsWith('/dashboard')
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -71,8 +73,8 @@ export default function Navbar() {
                   </Link>
                 )}
                 <a
-                  href="/cv.pdf"
-                  download
+                  href={lang === 'en' ? cvEN : cvES}
+                  download={lang === 'en' ? 'Resume-Photo-2026.pdf' : 'Resumen-Foto-2026.pdf'}
                   className="tag-badge cursor-pointer hover:bg-accent hover:text-bgBase transition-all px-4 py-2"
                 >
                   {t.nav.downloadCV}
