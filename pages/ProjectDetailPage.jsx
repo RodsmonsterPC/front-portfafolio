@@ -34,7 +34,7 @@ export default function ProjectDetailPage() {
   return (
     <div className="min-h-screen bg-bgBase">
       <Navbar />
-      <main className="max-w-screen-xl mx-auto px-4 pb-16">
+      <main className="max-w-screen-xl mx-auto px-4 sm:px-6 pb-16 overflow-x-hidden">
         {/* Back button */}
         <motion.button
           initial={{ opacity: 0, x: -20 }}
@@ -70,7 +70,7 @@ export default function ProjectDetailPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="lg:col-span-2 glass-card p-10"
+            className="lg:col-span-2 glass-card p-5 sm:p-8 lg:p-10 min-w-0"
           >
             {/* Tags */}
             <div className="flex flex-wrap gap-2 mb-6">
@@ -79,17 +79,17 @@ export default function ProjectDetailPage() {
               ))}
             </div>
 
-            <h1 className="text-5xl font-black mb-6 leading-tight">{project.name}</h1>
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black mb-6 leading-tight break-words">{project.name}</h1>
             <p className="text-textDim text-lg leading-relaxed">{project.description}</p>
 
             {/* Divider */}
             <div className="border-t border-white/5 my-8" />
 
             {/* Meta */}
-            <div className="grid grid-cols-2 gap-6">
-              <div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="min-w-0">
                 <p className="text-xs uppercase tracking-widest text-textDim font-semibold mb-1">Creado</p>
-                <p className="font-mono text-accent">
+                <p className="font-mono text-accent text-sm sm:text-base">
                   {new Date(project.createdAt).toLocaleDateString('es-ES', {
                     year: 'numeric',
                     month: 'long',
@@ -97,9 +97,9 @@ export default function ProjectDetailPage() {
                   })}
                 </p>
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-xs uppercase tracking-widest text-textDim font-semibold mb-1">ID del Proyecto</p>
-                <p className="font-mono text-textDim text-sm">{project.id}</p>
+                <p className="font-mono text-textDim text-xs break-all leading-relaxed">{project.id}</p>
               </div>
             </div>
           </motion.div>
@@ -112,7 +112,7 @@ export default function ProjectDetailPage() {
             className="flex flex-col gap-4"
           >
             {/* Links card */}
-            <div className="glass-card p-8">
+            <div className="glass-card p-5 sm:p-8">
               <h3 className="font-black text-lg mb-6">Accesos Directos</h3>
               <div className="flex flex-col gap-3">
                 {project.demoLink ? (
@@ -175,7 +175,7 @@ export default function ProjectDetailPage() {
             </div>
 
             {/* Tech stack */}
-            <div className="glass-card p-8">
+            <div className="glass-card p-5 sm:p-8">
               <h3 className="font-black text-lg mb-6">Stack Tecnológico</h3>
               <div className="flex flex-col gap-2">
                 {(project.tags || []).map((tag) => (
@@ -189,7 +189,7 @@ export default function ProjectDetailPage() {
 
             {/* Actions — solo visible para admin */}
             {isAuth && (
-              <div className="glass-card p-8">
+              <div className="glass-card p-5 sm:p-8">
                 <h3 className="font-black text-lg mb-6">Acciones</h3>
                 <div className="flex flex-col gap-3">
                   <Link to="/dashboard" className="btn-ghost text-center flex items-center justify-center gap-2">
