@@ -20,12 +20,19 @@ export default function LanguageSwitch() {
       </span>
 
       {/* Toggle */}
-      <label className="relative inline-flex items-center cursor-pointer select-none">
+      <label
+        className="relative inline-flex items-center cursor-pointer select-none"
+        onMouseDown={(e) => e.preventDefault()}
+      >
         <input
           type="checkbox"
           className="sr-only"
           checked={isEN}
-          onChange={toggle}
+          onChange={(e) => {
+            e.preventDefault()
+            toggle()
+          }}
+          onFocus={(e) => e.target.blur()}
           id="lang-toggle"
           aria-label="Toggle language"
         />
