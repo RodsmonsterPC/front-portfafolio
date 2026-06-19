@@ -2,14 +2,24 @@ import { useLanguage } from '../../hooks/useLanguage'
 
 /**
  * Toggle switch ES ↔ EN
- * Adapts the HTML/CSS design provided by the user to React + Tailwind.
+ * Uses a <button role="switch"> instead of label+checkbox to avoid
+ * browser scroll-to-focus behavior when the user clicks from lower on the page.
  */
 export default function LanguageSwitch() {
   const { lang, toggle } = useLanguage()
   const isEN = lang === 'en'
 
+  const handleToggle = (e) => {
+    // Remove focus immediately so the browser doesn't scroll to the sticky navbar
+    e.currentTarget.blur()
+    toggle()
+  }
+
   return (
-    <div className="flex items-center gap-2" title={isEN ? 'Switch to Spanish' : 'Cambiar a Inglés'}>
+    <div
+      className="flex items-center gap-2"
+      title={isEN ? 'Switch to Spanish' : 'Cambiar a Inglés'}
+    >
       {/* ES label */}
       <span
         className={`text-[10px] font-black font-mono tracking-widest transition-colors duration-200 ${
@@ -19,23 +29,15 @@ export default function LanguageSwitch() {
         ES
       </span>
 
-      {/* Toggle */}
-      <label
-        className="relative inline-flex items-center cursor-pointer select-none"
-        onMouseDown={(e) => e.preventDefault()}
+      {/* Toggle — button with role="switch" for accessibility */}
+      <button
+        type="button"
+        role="switch"
+        aria-checked={isEN}
+        aria-label={isEN ? 'Switch to Spanish' : 'Cambiar a Inglés'}
+        onClick={handleToggle}
+        className="relative inline-flex items-center cursor-pointer select-none focus:outline-none"
       >
-        <input
-          type="checkbox"
-          className="sr-only"
-          checked={isEN}
-          onChange={(e) => {
-            e.preventDefault()
-            toggle()
-          }}
-          onFocus={(e) => e.target.blur()}
-          id="lang-toggle"
-          aria-label="Toggle language"
-        />
         {/* Track */}
         <div
           className={`relative w-[50px] h-[30px] rounded-full transition-colors duration-200 ${
@@ -49,7 +51,7 @@ export default function LanguageSwitch() {
             }`}
           />
         </div>
-      </label>
+      </button>
 
       {/* EN label */}
       <span
